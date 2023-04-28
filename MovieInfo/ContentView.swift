@@ -31,7 +31,7 @@ struct ContentView: View {
             })
             .navigationDestination(for: SearchResult.self) { result in
                 // This code is replicated elsewhere and would be terrific if we could
-                //  replace it with an injected Controller, but that would require that
+                //  replace it with an injected Coordinator, but that would require that
                 //  we were allowed to declare a function in a protocol to return `some View`
                 //  as is expected here.
                 // Having navigation behaviour inherited from this far up the stack could
