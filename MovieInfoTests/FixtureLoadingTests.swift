@@ -9,10 +9,14 @@ import XCTest
 @testable import MovieInfo
 
 class FixtureLoadingTests: XCTestCase {
-    
-    func load(fixture filename: String) -> [String:Any] {
+
+    func load(data filename: String) -> Data {
         let url = Bundle(for: type(of: self)).url(forResource: filename, withExtension: "json")!
-        let data = try! Data(contentsOf: url)
+        return try! Data(contentsOf: url)
+    }
+
+    func load(fixture filename: String) -> [String:Any] {
+        let data = load(data: filename)
         return try! JSONSerialization.jsonObject(with: data) as! [String:Any]
     }
 

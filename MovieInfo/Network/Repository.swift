@@ -27,7 +27,7 @@ enum RepositoryError: Error {
         //      status_code: 34,
         //      status_message: "The resource you requested could not be found."
         //  }
-        guard let success = json["success"] as? Bool, success == true else {
+        guard let success = json["success"] as? Bool, success == false else {
             return nil
         }
         let code = json["status_code"] as? Int ?? 0

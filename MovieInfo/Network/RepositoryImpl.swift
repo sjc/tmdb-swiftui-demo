@@ -7,63 +7,16 @@
 
 import Foundation
 
-// https://api.themoviedb.org/3/
-
-enum Endpoint {
-    case search(term: String) // search/multi
-    case movies(id: Int) // movie/{id}
-    case movieCredits(id: Int) // movie/{id}/credits
-    case tvShows(id: Int) // tv/{id}
-    case tvShowCredits(id: Int) // tv/{id}/credits
-    case people(id: Int) // person/{id}
-    
-    var path: String {
-        switch self {
-        case .search:
-            return "/3/search/multi"
-        case .movies(let id):
-            return "/3/movie/\(id)"
-        case .movieCredits(let id):
-            return "/3/movie/\(id)/credits"
-        case .tvShows(let id):
-            return "/3/tv/\(id)"
-        case .tvShowCredits(let id):
-            return "/3/tv/\(id)/credits"
-        case .people(let id):
-            return "/3/person/\(id)"
-        }
-    }
-    
-    var parameters: [URLQueryItem] {
-        switch self {
-        case .search(let term):
-            return [
-                URLQueryItem(name: "query", value: term),
-                URLQueryItem(name: "include_adult", value: "false") // because that would be embaressing
-            ]
-        default:
-            return []
-        }
-    }
-
-    func request(with apiKey: String) -> URLRequest {
-        var url = URLComponents(string: "https://api.themoviedb.org")!
-        url.path = self.path
-        var parameters = self.parameters
-        parameters.append(URLQueryItem(name: "api_key", value: apiKey))
-        url.queryItems = parameters
-        return URLRequest(url: url.url!)
-    }
-}
-
 class RepositoryImpl: Repository {
-    
-    init(apiKey: String) {
+
+    init(apiKey: String, dataFetcher: DataFetcher = URLSession.shared) {
         self.apiKey = apiKey
+        self.dataFetcher = dataFetcher
     }
-    
+
     let apiKey: String
-    
+    let dataFetcher: DataFetcher
+
     func search(term: String) async -> Result<[SearchResult], Error> {
         do {
             let json = try await fetchJson(endpoint: .search(term: term))
@@ -105,7 +58,7 @@ class RepositoryImpl: Repository {
 
     func fetch(personId: Int) async -> Result<Person, Error> {
         do {
-            let json = try await fetchJson(endpoint: .people(id: personId))
+            let json = try await fetchJson(endpoint: .person(id: personId))
             guard let person = Person.from(json: json) else {
                 return .failure(RepositoryError.parseFailed)
             }
@@ -117,7 +70,7 @@ class RepositoryImpl: Repository {
 
     private func fetchJson(endpoint: Endpoint) async throws -> [String:Any] {
         let request = endpoint.request(with: apiKey)
-        let (data,_) = try await URLSession.shared.data(for: request)
+        let (data,_) = try await dataFetcher.data(for: request, delegate: nil)
         // TODO: get NSURLResponse from above and examine the status code
         if data.isEmpty {
             throw RepositoryError.noData

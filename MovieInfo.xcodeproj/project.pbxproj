@@ -38,6 +38,12 @@
 		F8F5E22429F7B0CF006AAC46 /* ImageURL.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8F5E22329F7B0CF006AAC46 /* ImageURL.swift */; };
 		F8F5E22629F7C19E006AAC46 /* TVShowTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8F5E22529F7C19E006AAC46 /* TVShowTests.swift */; };
 		F8F5E22829F7C52E006AAC46 /* PersonTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8F5E22729F7C52E006AAC46 /* PersonTests.swift */; };
+		F8F5E22A29FB9D97006AAC46 /* Endpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8F5E22929FB9D97006AAC46 /* Endpoint.swift */; };
+		F8F5E22C29FB9EBE006AAC46 /* DataFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8F5E22B29FB9EBE006AAC46 /* DataFetcher.swift */; };
+		F8F5E23129FBA11E006AAC46 /* MockDataFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8F5E23029FBA11E006AAC46 /* MockDataFetcher.swift */; };
+		F8F5E23329FBA5F5006AAC46 /* EndpointTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8F5E23229FBA5F5006AAC46 /* EndpointTests.swift */; };
+		F8F5E23529FBAE7B006AAC46 /* RepositoryImplTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8F5E23429FBAE7B006AAC46 /* RepositoryImplTests.swift */; };
+		F8F5E23729FBB1E3006AAC46 /* error.json in Resources */ = {isa = PBXBuildFile; fileRef = F8F5E23629FBB1E3006AAC46 /* error.json */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -92,6 +98,12 @@
 		F8F5E22329F7B0CF006AAC46 /* ImageURL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageURL.swift; sourceTree = "<group>"; };
 		F8F5E22529F7C19E006AAC46 /* TVShowTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVShowTests.swift; sourceTree = "<group>"; };
 		F8F5E22729F7C52E006AAC46 /* PersonTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonTests.swift; sourceTree = "<group>"; };
+		F8F5E22929FB9D97006AAC46 /* Endpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Endpoint.swift; sourceTree = "<group>"; };
+		F8F5E22B29FB9EBE006AAC46 /* DataFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataFetcher.swift; sourceTree = "<group>"; };
+		F8F5E23029FBA11E006AAC46 /* MockDataFetcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MockDataFetcher.swift; path = MovieInfoTests/Mocks/MockDataFetcher.swift; sourceTree = SOURCE_ROOT; };
+		F8F5E23229FBA5F5006AAC46 /* EndpointTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EndpointTests.swift; sourceTree = "<group>"; };
+		F8F5E23429FBAE7B006AAC46 /* RepositoryImplTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositoryImplTests.swift; sourceTree = "<group>"; };
+		F8F5E23629FBB1E3006AAC46 /* error.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = error.json; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -164,12 +176,15 @@
 		F8F5E1D629F6AF6E006AAC46 /* MovieInfoTests */ = {
 			isa = PBXGroup;
 			children = (
+				F8F5E22F29FBA10B006AAC46 /* Mocks */,
 				F8F5E20929F79271006AAC46 /* Fixtures */,
 				F8F5E1D729F6AF6E006AAC46 /* FixtureLoadingTests.swift */,
 				F8F5E21629F7949F006AAC46 /* SearchResultTests.swift */,
 				F8F5E21829F79F64006AAC46 /* MovieTests.swift */,
 				F8F5E22529F7C19E006AAC46 /* TVShowTests.swift */,
 				F8F5E22729F7C52E006AAC46 /* PersonTests.swift */,
+				F8F5E23229FBA5F5006AAC46 /* EndpointTests.swift */,
+				F8F5E23429FBAE7B006AAC46 /* RepositoryImplTests.swift */,
 			);
 			path = MovieInfoTests;
 			sourceTree = "<group>";
@@ -198,9 +213,11 @@
 		F8F5E1FB29F6C209006AAC46 /* Network */ = {
 			isa = PBXGroup;
 			children = (
+				F8F5E22929FB9D97006AAC46 /* Endpoint.swift */,
 				F8F5E1FC29F6C2F0006AAC46 /* Repository.swift */,
 				F8F5E1FE29F6C572006AAC46 /* RepositoryImpl.swift */,
 				F8F5E21A29F7A0FE006AAC46 /* MockRespository.swift */,
+				F8F5E22B29FB9EBE006AAC46 /* DataFetcher.swift */,
 				F8F5E22329F7B0CF006AAC46 /* ImageURL.swift */,
 			);
 			path = Network;
@@ -227,8 +244,17 @@
 				F8F5E20D29F7931C006AAC46 /* search_multi.json */,
 				F8F5E20C29F7931C006AAC46 /* tv_show_credits.json */,
 				F8F5E20F29F7931C006AAC46 /* tv_show.json */,
+				F8F5E23629FBB1E3006AAC46 /* error.json */,
 			);
 			path = Fixtures;
+			sourceTree = "<group>";
+		};
+		F8F5E22F29FBA10B006AAC46 /* Mocks */ = {
+			isa = PBXGroup;
+			children = (
+				F8F5E23029FBA11E006AAC46 /* MockDataFetcher.swift */,
+			);
+			path = Mocks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -345,6 +371,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F8F5E21529F7931C006AAC46 /* tv_show.json in Resources */,
+				F8F5E23729FBB1E3006AAC46 /* error.json in Resources */,
 				F8F5E21229F7931C006AAC46 /* tv_show_credits.json in Resources */,
 				F8F5E21429F7931C006AAC46 /* movie.json in Resources */,
 				F8F5E21329F7931C006AAC46 /* search_multi.json in Resources */,
@@ -382,6 +409,8 @@
 				F8F5E20229F6EDBB006AAC46 /* SearchResultView.swift in Sources */,
 				F8F5E20429F6F3DD006AAC46 /* MovieView.swift in Sources */,
 				F8F5E22229F7B032006AAC46 /* HeroImageView.swift in Sources */,
+				F8F5E22C29FB9EBE006AAC46 /* DataFetcher.swift in Sources */,
+				F8F5E22A29FB9D97006AAC46 /* Endpoint.swift in Sources */,
 				F8F5E22429F7B0CF006AAC46 /* ImageURL.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -391,9 +420,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				F8F5E21729F7949F006AAC46 /* SearchResultTests.swift in Sources */,
+				F8F5E23529FBAE7B006AAC46 /* RepositoryImplTests.swift in Sources */,
 				F8F5E1D829F6AF6E006AAC46 /* FixtureLoadingTests.swift in Sources */,
 				F8F5E22829F7C52E006AAC46 /* PersonTests.swift in Sources */,
+				F8F5E23129FBA11E006AAC46 /* MockDataFetcher.swift in Sources */,
 				F8F5E22629F7C19E006AAC46 /* TVShowTests.swift in Sources */,
+				F8F5E23329FBA5F5006AAC46 /* EndpointTests.swift in Sources */,
 				F8F5E21929F79F64006AAC46 /* MovieTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
