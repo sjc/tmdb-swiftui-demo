@@ -18,7 +18,7 @@ final class PersonTests: FixtureLoadingTests {
         XCTAssertEqual(person!.id, 2039)
         XCTAssertEqual(person!.name, "Brendan Gleeson")
         XCTAssertEqual(person!.birthday, "1955-03-29")
-        XCTAssertNil(person!.deathday)
+        XCTAssertEqual(person!.deathday, "")
         XCTAssertEqual(person!.placeOfBirth, "Dublin, Ireland")
         XCTAssertFalse(person!.biography.isEmpty)
         XCTAssertEqual(person!.posterPath, "/379TXtBPRrkBDrEBWPQ5v3up7kT.jpg")
