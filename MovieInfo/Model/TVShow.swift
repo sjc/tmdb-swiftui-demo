@@ -7,55 +7,80 @@
 
 import Foundation
 
-struct TVShow {
+struct TVShowSummary: Equatable, Codable {
+    
+    // the information about a TV show which is returned by the Search API
+    //  where "media_type": "tv",
     
     let id: Int
-    let title: String
-    let posterPath: String?
+    let name: String
     let backdropPath: String?
-    let startDate: String
-    let endDate: String
-    let seasons: Int
-    let runtime: Int
-    let tagline: String
+    let posterPath: String?
+    let firstAirDate: String?
+    let genres: [Int] // TODO: parse these to values
+    let countryOfOrigin: [String]
+    let originalLanguage: String
+    let originalName: String?
     let overview: String
+    let popularity: Double
+    let voteAverage: Double
+    let voteCount: Int
+
+    enum CodingKeys: String, CodingKey {
+        case id
+        case name
+        case backdropPath = "backdrop_path"
+        case posterPath = "poster_path"
+        case firstAirDate = "first_air_date"
+        case genres = "genre_ids"
+        case countryOfOrigin = "origin_country"
+        case originalLanguage = "original_language"
+        case originalName = "original_name"
+        case overview
+        case popularity
+        case voteAverage = "vote_average"
+        case voteCount = "vote_count"
+    }
+}
+
+struct TVShowDetails: Decodable {
     
-    let cast: [SearchResult]
-    let crew: [SearchResult]
-    
+    let id: Int
+    let tagline: String?
+    let createdBy: [PersonSummary]
+    let numberOfEpisodes: Int
+    let numberOfSeasons: Int
+    let episodeRunTimes: [Int]
+    let firstAirDate: String? // duplicated from summary
+    let lastAirDate: String?
+
+    enum CodingKeys: String, CodingKey {
+        case id
+        case tagline
+        case createdBy = "created_by"
+        case numberOfEpisodes = "number_of_episodes"
+        case numberOfSeasons = "number_of_seasons"
+        case episodeRunTimes = "episode_run_time"
+        case firstAirDate = "first_air_date"
+        case lastAirDate = "last_air_date"
+    }
+
     var activeYears: String {
-        return "\(String(startDate.prefix(4))) - \(String(endDate.prefix(4)))"
+        return "\((firstAirDate ?? "?").prefix(4)) - \((lastAirDate ?? "").prefix(4))"
     }
-    
-    var runtimeMins: String {
-        return "\(runtime) mins"
-    }
-    
-    static func from(details: [String:Any], credits: [String:Any]) -> TVShow? {
-        guard let id = details["id"] as? Int,
-              let title = details["name"] as? String,
-              let startDate = details["first_air_date"] as? String,
-              let runtimes = details["episode_run_time"] as? [Int],
-              let seasons = details["seasons"] as? [[String:Any]],
-              let tagline = details["tagline"] as? String,
-              let overview = details["overview"] as? String,
-              let cast = credits["cast"] as? [[String:Any]],
-              let crew = credits["crew"] as? [[String:Any]] else {
-            return nil
+
+    var runtimeMins: String? {
+        if let runtime = episodeRunTimes.first {
+            return "\(runtime) mins"
         }
-        return TVShow(
-            id: id,
-            title: title,
-            posterPath: details["poster_path"] as? String,
-            backdropPath: details["backdrop_path"] as? String,
-            startDate: startDate,
-            endDate: details["last_air_date"] as? String ?? "",
-            seasons: seasons.count,
-            runtime: runtimes.first ?? 0,
-            tagline: tagline,
-            overview: overview,
-            cast: cast.compactMap { SearchResult.from(cast: $0) },
-            crew: crew.compactMap { SearchResult.from(crew: $0) }
-        )
+        return nil
+    }
+
+    var cast: [PersonSummary]?
+    var crew: [PersonSummary]?
+
+    mutating func add(credits: Credits) {
+        self.cast = credits.cast
+        self.crew = credits.crew
     }
 }

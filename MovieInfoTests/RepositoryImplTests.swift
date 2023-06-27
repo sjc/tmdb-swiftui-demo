@@ -95,8 +95,8 @@ final class RepositoryImplTests: FixtureLoadingTests {
             return
         }
         XCTAssertEqual(movie.id, 8321) // value from fixture, not parameter
-        XCTAssertEqual(movie.cast.count, 25)
-        XCTAssertEqual(movie.crew.count, 43)
+        XCTAssertEqual(movie.cast?.count, 25)
+        XCTAssertEqual(movie.crew?.count, 43)
         
         XCTAssertEqual(mockDataFetcher.dataForCalledCount, 2)
         XCTAssertEqual(mockDataFetcher.requestsPassed.count, 2)
@@ -124,8 +124,8 @@ final class RepositoryImplTests: FixtureLoadingTests {
             return
         }
         XCTAssertEqual(tvShow.id, 95) // value from fixture, not parameter
-        XCTAssertEqual(tvShow.cast.count, 7)
-        XCTAssertEqual(tvShow.crew.count, 9)
+        XCTAssertEqual(tvShow.cast?.count, 7)
+        XCTAssertEqual(tvShow.crew?.count, 9)
 
         XCTAssertEqual(mockDataFetcher.dataForCalledCount, 2)
         XCTAssertEqual(mockDataFetcher.requestsPassed.count, 2)

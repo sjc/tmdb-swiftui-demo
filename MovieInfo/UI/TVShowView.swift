@@ -9,28 +9,33 @@ import SwiftUI
 
 struct TVShowView: View {
     
-    let result: SearchResult
+    let summary: TVShowSummary
     let repository: Repository
     
-    @State private var tvShow: TVShow?
+    @State private var details: TVShowDetails?
     @State private var errorMessage: String?
 
     var body: some View {
-        if let tvShow = tvShow {
-            view(forShow: tvShow)
+        if let details = details {
+            view(forDetails: details, summary: summary)
         } else if let errorMessage = errorMessage {
             Text(errorMessage)
         } else {
-            view(forSearchResult: result)
+            view(forSummary: summary)
                 .task {
                     await fetchShow()
                 }
         }
     }
     
-    func view(forSearchResult: SearchResult) -> some View {
+    func view(forSummary summary: TVShowSummary) -> some View {
         VStack {
-            HeroImageView(title: result.title, imagePath: result.backgroundPath)
+            HeroImageView(
+                title: summary.name,
+                imagePath: summary.backdropPath
+            )
+            Text(summary.overview)
+                .padding()
             Spacer()
             ProgressView()
                 .padding(.all)
@@ -39,38 +44,58 @@ struct TVShowView: View {
         .navigationBarTitleDisplayMode(.inline)
     }
     
-    func view(forShow tvShow: TVShow) -> some View {
+    func view(forDetails details: TVShowDetails, summary: TVShowSummary) -> some View {
         VStack {
-            HeroImageView(title: tvShow.title, imagePath: tvShow.backdropPath)
-            List() {
+            HeroImageView(
+                title: summary.name,
+                imagePath: summary.backdropPath
+            )
+            ScrollView(.vertical, showsIndicators: false) {
                 VStack {
                     HStack {
-                        Text(tvShow.activeYears)
+                        Text(details.activeYears)
+                            .font(.caption)
                         Spacer()
-                        Text(tvShow.runtimeMins)
+                        if let runtimeMins = details.runtimeMins {
+                            Text(runtimeMins)
+                                .font(.caption)
+                        }
                     }
-                    Text("\(tvShow.seasons) seasons")
-                        .padding(.all)
-                    if !tvShow.tagline.isEmpty {
-                        Text(tvShow.tagline)
+                    .padding([.leading,.trailing])
+                    Text("\(details.numberOfSeasons) seasons, \(details.numberOfEpisodes) episodes")
+                        .padding()
+                    if let tagline = details.tagline, !tagline.isEmpty {
+                        Text(tagline)
+                            .italic()
                             .padding(.bottom)
                     }
-                    Text(tvShow.overview)
+                    Text(summary.overview)
+                        .padding()
+                    if let cast = details.cast {
+                        creditsSection(title: "Cast", members: cast)
+                    }
+                    if let crew = details.crew {
+                        creditsSection(title: "Crew", members: crew)
+                    }
+                    Spacer()
                 }
-                creditsSection(title: "Cast", members: tvShow.cast)
-                creditsSection(title: "Crew", members: tvShow.crew)
             }
         }
         .navigationBarTitleDisplayMode(.inline)
+        .ignoresSafeArea(edges: .top)
     }
     
-    func creditsSection(title: String, members: [SearchResult]) -> some View {
-        return Section(header: Text(title)) {
-            ForEach(members, id: \.self) { member in
-                NavigationLink(value: member) {
-                    VStack(alignment: .leading) {
-                        Text(member.title)
-                        Text(member.subtitle)
+    func creditsSection(title: String, members: [PersonSummary]) -> some View {
+        return VStack(alignment: .leading) {
+            Text(title)
+                .padding(.leading)
+            ScrollView(.horizontal, showsIndicators: false) {
+                LazyHStack {
+                    ForEach(members, id: \.self) { person in
+                        NavigationLink(value: person) {
+                            PersonSummaryView(summary: person)
+                                .padding([.leading,.trailing])
+                        }
                     }
                 }
             }
@@ -78,12 +103,12 @@ struct TVShowView: View {
     }
     
     func fetchShow() async {
-        let result = await repository.fetch(tvShowId: result.id)
+        let result = await repository.fetch(tvShowId: summary.id)
         switch result {
         case .failure(let error):
             self.errorMessage = error.localizedDescription
-        case .success(let tvShow):
-            self.tvShow = tvShow
+        case .success(let details):
+            self.details = details
         }
     }
 }
@@ -92,7 +117,7 @@ struct TVShowView_Previews: PreviewProvider {
     static var previews: some View {
         let repository = MockRepository()
         TVShowView(
-            result: repository.searchResultsToReturn![1],
+            summary: repository.searchResultsToReturn![1].tvShow!,
             repository: repository
         )
     }

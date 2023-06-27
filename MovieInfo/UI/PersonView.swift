@@ -9,62 +9,66 @@ import SwiftUI
 
 struct PersonView: View {
     
-    let result: SearchResult
+    let summary: PersonSummary
     let repository: Repository
     
-    @State private var person: Person?
+    @State private var details: PersonDetails?
     @State private var errorMessage: String?
 
     var body: some View {
-        if let person = person {
-            view(forPerson: person)
+        if let details = details {
+            view(forDetails: details, summary: summary)
         } else if let errorMessage = errorMessage {
             Text(errorMessage)
         } else {
-            view(forSearchResult: result)
+            view(forSummary: summary)
                 .task {
                     await fetchPerson()
                 }
         }
     }
     
-    func view(forSearchResult: SearchResult) -> some View {
-        VStack {
-            headerView(
-                imagePath: result.posterPath,
-                name: result.title
-            )
-            Spacer()
-            ProgressView()
-                .padding(.all)
-            Spacer()
+    func view(forSummary summary: PersonSummary) -> some View {
+        ScrollView(.vertical, showsIndicators: false) {
+            VStack {
+                headerView(
+                    imagePath: summary.profilePath,
+                    name: summary.name
+                )
+                Spacer()
+                ProgressView()
+                    .padding(.all)
+                Spacer()
+            }
+            .padding()
+            .navigationBarTitleDisplayMode(.inline)
         }
-        .navigationBarTitleDisplayMode(.inline)
     }
     
-    func view(forPerson person: Person) -> some View {
-        List {
-            headerView(
-                imagePath: person.posterPath,
-                name: person.name,
-                dates: person.dates,
-                place: person.placeOfBirth
-            )
-            .listRowSeparator(.hidden)
-            Text(person.biography)
-                .padding(.all)
-                .listRowSeparator(.hidden)
+    func view(forDetails details: PersonDetails, summary: PersonSummary) -> some View {
+        ScrollView(.vertical, showsIndicators: false) {
+            VStack {
+                headerView(
+                    imagePath: summary.profilePath,
+                    name: summary.name,
+                    dates: details.dates,
+                    place: details.placeOfBirth
+                )
+                Text(details.biography)
+                    .padding(.top)
+                Spacer()
+            }
+            .padding()
+            .navigationBarTitleDisplayMode(.inline)
         }
-        .listStyle(.plain)
-        .navigationBarTitleDisplayMode(.inline)
     }
     
-    func headerView(imagePath: String?, name: String, dates: String = "", place: String = "") -> some View {
+    func headerView(imagePath: String?, name: String, dates: String = "", place: String? = nil) -> some View {
         HStack {
             AsyncImage(url: imagePath?.smallImageURL) { phase in
                 switch phase {
                 case .empty:
-                    if result.posterPath?.smallImageURL == nil {
+                    if summary.profilePath?.smallImageURL == nil {
                         EmptyView()
                     } else {
                         ProgressView()
@@ -87,18 +91,21 @@ struct PersonView: View {
                 Text(name)
                     .font(.title)
                 Text(dates)
-                Text(place)
+                if let place = place {
+                    Text(place)
+                }
             }
+            .padding(.leading)
         }
     }
     
     func fetchPerson() async {
-        let result = await repository.fetch(personId: result.id)
+        let result = await repository.fetch(personId: summary.id)
         switch result {
         case .failure(let error):
             self.errorMessage = error.localizedDescription
-        case .success(let person):
-            self.person = person
+        case .success(let details):
+            self.details = details
         }
     }
 }
@@ -107,7 +114,7 @@ struct PersonView_Previews: PreviewProvider {
     static var previews: some View {
         let repository = MockRepository()
         PersonView(
-            result: repository.searchResultsToReturn![2],
+            summary: repository.searchResultsToReturn![2].person!,
             repository: repository
         )
     }

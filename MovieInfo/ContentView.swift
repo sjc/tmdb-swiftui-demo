@@ -30,20 +30,21 @@ struct ContentView: View {
                 }
             })
             .navigationDestination(for: SearchResult.self) { result in
-                // This code is replicated elsewhere and would be terrific if we could
-                //  replace it with an injected Coordinator, but that would require that
-                //  we were allowed to declare a function in a protocol to return `some View`
-                //  as is expected here.
-                // Having navigation behaviour inherited from this far up the stack could
-                //  also prove troublesome and could prevent useful testing.
-                switch result.mediaType {
-                case .movie:
-                    MovieView(result: result, repository: repository)
-                case .tv:
-                    TVShowView(result: result, repository: repository)
-                case .person:
-                    PersonView(result: result, repository: repository)
+                
+                // Navigation for this app is simple: If a summary item is selected,
+                //  we display the details screen for that item
+
+                switch result {
+                case .movie(let movie):
+                    MovieView(summary: movie, repository: repository)
+                case .tvShow(let tvShow):
+                    TVShowView(summary: tvShow, repository: repository)
+                case .person(let person):
+                    PersonView(summary: person, repository: repository)
                 }
+            }
+            .navigationDestination(for: PersonSummary.self) { person in
+                PersonView(summary: person, repository: repository)
             }
             .navigationTitle("Search")
         }

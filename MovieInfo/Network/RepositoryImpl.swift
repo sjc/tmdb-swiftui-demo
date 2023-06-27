@@ -19,68 +19,73 @@ class RepositoryImpl: Repository {
 
     func search(term: String) async -> Result<[SearchResult], Error> {
         do {
-            let json = try await fetchJson(endpoint: .search(term: term))
-            guard let results = json["results"] as? [[String:Any]] else {
-                return .success([]) // indicates nothing went wrong, but we got no results
+            let data = try await fetchData(endpoint: .search(term: term))
+            guard let results = try? JSONDecoder().decode(SearchResults.self, from: data) else {
+                return .failure(RepositoryError.parseFailed)
             }
-            return .success(results.compactMap { SearchResult.from(json:$0) }.sorted(by: { $0.popularity > $1.popularity }))
+            return .success(results.results.sorted(by: { $0.popularity > $1.popularity }))
 
         } catch {
             return .failure(error)
         }
     }
     
-    func fetch(movieId: Int) async -> Result<Movie, Error> {
+    func fetch(movieId: Int) async -> Result<MovieDetails, Error> {
         do {
-            let details = try await fetchJson(endpoint: .movies(id: movieId))
-            let credits = try await fetchJson(endpoint: .movieCredits(id: movieId))
-            guard let movie = Movie.from(details: details, credits: credits) else {
+            let detailsData = try await fetchData(endpoint: .movies(id: movieId))
+            guard var details = try? JSONDecoder().decode(MovieDetails.self, from: detailsData) else {
                 return .failure(RepositoryError.parseFailed)
             }
-            return .success(movie)
+            let creditsData = try await fetchData(endpoint: .movieCredits(id: movieId))
+            guard let credits = try? JSONDecoder().decode(Credits.self, from: creditsData) else {
+                return .failure(RepositoryError.parseFailed)
+            }
+            details.add(credits: credits)
+            return .success(details)
         } catch {
             return .failure(error)
         }
     }
 
-    func fetch(tvShowId: Int) async -> Result<TVShow, Error> {
+    func fetch(tvShowId: Int) async -> Result<TVShowDetails, Error> {
         do {
-            let details = try await fetchJson(endpoint: .tvShows(id: tvShowId))
-            let credits = try await fetchJson(endpoint: .tvShowCredits(id: tvShowId))
-            guard let tvShow = TVShow.from(details: details, credits: credits) else {
+            let detailsData = try await fetchData(endpoint: .tvShows(id: tvShowId))
+            guard var details = try? JSONDecoder().decode(TVShowDetails.self, from: detailsData) else {
                 return .failure(RepositoryError.parseFailed)
             }
-            return .success(tvShow)
+            let creditsData = try await fetchData(endpoint: .tvShowCredits(id: tvShowId))
+            guard let credits = try? JSONDecoder().decode(Credits.self, from: creditsData) else {
+                return .failure(RepositoryError.parseFailed)
+            }
+            details.add(credits: credits)
+            return .success(details)
         } catch {
             return .failure(error)
         }
     }
 
-    func fetch(personId: Int) async -> Result<Person, Error> {
+    func fetch(personId: Int) async -> Result<PersonDetails, Error> {
         do {
-            let json = try await fetchJson(endpoint: .person(id: personId))
-            guard let person = Person.from(json: json) else {
+            let data = try await fetchData(endpoint: .person(id: personId))
+            guard let details = try? JSONDecoder().decode(PersonDetails.self, from: data) else {
                 return .failure(RepositoryError.parseFailed)
             }
-            return .success(person)
+            return .success(details)
         } catch {
             return .failure(error)
         }
     }
 
-    private func fetchJson(endpoint: Endpoint) async throws -> [String:Any] {
+    private func fetchData(endpoint: Endpoint) async throws -> Data {
         let request = endpoint.request(with: apiKey)
         let (data,_) = try await dataFetcher.data(for: request, delegate: nil)
         // TODO: get NSURLResponse from above and examine the status code
         if data.isEmpty {
             throw RepositoryError.noData
         }
-        guard let json = try JSONSerialization.jsonObject(with: data) as? [String:Any] else {
-            throw RepositoryError.parseFailed
-        }
-        if let error = RepositoryError.from(json: json) {
+        if let error = RepositoryError.from(data: data) {
             throw error
         }
-        return json
+        return data
     }
 }

@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F80BA30A2A49C78C006A6C21 /* SearchResults.swift in Sources */ = {isa = PBXBuildFile; fileRef = F80BA3092A49C78C006A6C21 /* SearchResults.swift */; };
+		F80BA30C2A49EDE2006A6C21 /* PersonSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F80BA30B2A49EDE2006A6C21 /* PersonSummaryView.swift */; };
+		F80BA30E2A49FCE2006A6C21 /* Credits.swift in Sources */ = {isa = PBXBuildFile; fileRef = F80BA30D2A49FCE2006A6C21 /* Credits.swift */; };
+		F80BA3102A4ACB98006A6C21 /* CreditsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F80BA30F2A4ACB98006A6C21 /* CreditsTests.swift */; };
 		F8F5E1C729F6AF6C006AAC46 /* MovieInfoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8F5E1C629F6AF6C006AAC46 /* MovieInfoApp.swift */; };
 		F8F5E1C929F6AF6C006AAC46 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8F5E1C829F6AF6C006AAC46 /* ContentView.swift */; };
 		F8F5E1CB29F6AF6E006AAC46 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F8F5E1CA29F6AF6E006AAC46 /* Assets.xcassets */; };
@@ -64,6 +68,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		F80BA3092A49C78C006A6C21 /* SearchResults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResults.swift; sourceTree = "<group>"; };
+		F80BA30B2A49EDE2006A6C21 /* PersonSummaryView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PersonSummaryView.swift; sourceTree = "<group>"; };
+		F80BA30D2A49FCE2006A6C21 /* Credits.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Credits.swift; sourceTree = "<group>"; };
+		F80BA30F2A4ACB98006A6C21 /* CreditsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreditsTests.swift; sourceTree = "<group>"; };
 		F8F5E1C329F6AF6C006AAC46 /* MovieInfo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MovieInfo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F8F5E1C629F6AF6C006AAC46 /* MovieInfoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieInfoApp.swift; sourceTree = "<group>"; };
 		F8F5E1C829F6AF6C006AAC46 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -180,6 +188,7 @@
 				F8F5E20929F79271006AAC46 /* Fixtures */,
 				F8F5E1D729F6AF6E006AAC46 /* FixtureLoadingTests.swift */,
 				F8F5E21629F7949F006AAC46 /* SearchResultTests.swift */,
+				F80BA30F2A4ACB98006A6C21 /* CreditsTests.swift */,
 				F8F5E21829F79F64006AAC46 /* MovieTests.swift */,
 				F8F5E22529F7C19E006AAC46 /* TVShowTests.swift */,
 				F8F5E22729F7C52E006AAC46 /* PersonTests.swift */,
@@ -202,6 +211,8 @@
 			isa = PBXGroup;
 			children = (
 				F8F5E1F129F6B3AD006AAC46 /* MediaType.swift */,
+				F80BA3092A49C78C006A6C21 /* SearchResults.swift */,
+				F80BA30D2A49FCE2006A6C21 /* Credits.swift */,
 				F8F5E1F329F6B3E9006AAC46 /* SearchResult.swift */,
 				F8F5E1F529F6B4E6006AAC46 /* Movie.swift */,
 				F8F5E1F729F6B519006AAC46 /* TVShow.swift */,
@@ -227,6 +238,7 @@
 			isa = PBXGroup;
 			children = (
 				F8F5E20129F6EDBB006AAC46 /* SearchResultView.swift */,
+				F80BA30B2A49EDE2006A6C21 /* PersonSummaryView.swift */,
 				F8F5E20329F6F3DD006AAC46 /* MovieView.swift */,
 				F8F5E20529F6F3EB006AAC46 /* TVShowView.swift */,
 				F8F5E20729F6F3F8006AAC46 /* PersonView.swift */,
@@ -401,16 +413,19 @@
 				F8F5E1FD29F6C2F0006AAC46 /* Repository.swift in Sources */,
 				F8F5E1F429F6B3E9006AAC46 /* SearchResult.swift in Sources */,
 				F8F5E20629F6F3EB006AAC46 /* TVShowView.swift in Sources */,
+				F80BA30C2A49EDE2006A6C21 /* PersonSummaryView.swift in Sources */,
 				F8F5E1FA29F6B53B006AAC46 /* Person.swift in Sources */,
 				F8F5E1FF29F6C572006AAC46 /* RepositoryImpl.swift in Sources */,
 				F8F5E1C729F6AF6C006AAC46 /* MovieInfoApp.swift in Sources */,
 				F8F5E20829F6F3F8006AAC46 /* PersonView.swift in Sources */,
 				F8F5E1F629F6B4E6006AAC46 /* Movie.swift in Sources */,
+				F80BA30A2A49C78C006A6C21 /* SearchResults.swift in Sources */,
 				F8F5E20229F6EDBB006AAC46 /* SearchResultView.swift in Sources */,
 				F8F5E20429F6F3DD006AAC46 /* MovieView.swift in Sources */,
 				F8F5E22229F7B032006AAC46 /* HeroImageView.swift in Sources */,
 				F8F5E22C29FB9EBE006AAC46 /* DataFetcher.swift in Sources */,
 				F8F5E22A29FB9D97006AAC46 /* Endpoint.swift in Sources */,
+				F80BA30E2A49FCE2006A6C21 /* Credits.swift in Sources */,
 				F8F5E22429F7B0CF006AAC46 /* ImageURL.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -421,6 +436,7 @@
 			files = (
 				F8F5E21729F7949F006AAC46 /* SearchResultTests.swift in Sources */,
 				F8F5E23529FBAE7B006AAC46 /* RepositoryImplTests.swift in Sources */,
+				F80BA3102A4ACB98006A6C21 /* CreditsTests.swift in Sources */,
 				F8F5E1D829F6AF6E006AAC46 /* FixtureLoadingTests.swift in Sources */,
 				F8F5E22829F7C52E006AAC46 /* PersonTests.swift in Sources */,
 				F8F5E23129FBA11E006AAC46 /* MockDataFetcher.swift in Sources */,

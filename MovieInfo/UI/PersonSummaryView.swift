@@ -1,25 +1,25 @@
 //
-//  SearchResultView.swift
+//  PersonSummaryView.swift
 //  MovieInfo
 //
-//  Created by Stuart Crook on 24/04/2023.
+//  Created by Stuart Crook on 26/6/2023.
 //
 
 import SwiftUI
 
-struct SearchResultView: View {
+struct PersonSummaryView: View {
     
-    let result: SearchResult
+    let summary: PersonSummary
     
     var body: some View {
-        HStack {
-            AsyncImage(url: result.smallImageURL) { phase in
+        VStack {
+            AsyncImage(url: summary.profilePath?.smallImageURL) { phase in
                 switch phase {
                 case .empty:
                     // AsyncImage is okay with a nil URL, but it uses the same
                     //  `.empty` state for it as initial loading, so we need to
                     //  check whether it is trying to load or not
-                    if result.smallImageURL == nil {
+                    if summary.profilePath?.smallImageURL == nil {
                         EmptyView()
                     } else {
                         ProgressView()
@@ -38,20 +38,33 @@ struct SearchResultView: View {
             .frame(width: 100, height: 150)
             .background(Color.gray)
             .cornerRadius(2.0)
-            VStack(alignment: .leading) {
-                Text(result.title)
-                    .font(.title)
-                Text(result.subtitle)
-                    .font(.subheadline)
+            Text(summary.name)
+                .font(.caption)
+                .bold()
+            if let character = summary.character {
+                Text(character)
+                    .font(.caption)
+            } else if let job = summary.job {
+                Text(job)
+                    .font(.caption)
             }
         }
     }
 }
 
-struct SearchResultView_Previews: PreviewProvider {
+struct PersonSummaryView_Previews: PreviewProvider {
     static var previews: some View {
-        SearchResultView(result: MockRepository().searchResultsToReturn![0])
-        SearchResultView(result: MockRepository().searchResultsToReturn![1])
-        SearchResultView(result: MockRepository().searchResultsToReturn![2])
+        PersonSummaryView(
+            summary: PersonSummary(
+                id: 2039,
+                name: "Brendan Gleeson",
+                profilePath: "/379TXtBPRrkBDrEBWPQ5v3up7kT.jpg",
+                department: "Acting",
+                character: nil,
+                job: "Producer",
+                originalName: nil,
+                popularity: 1.0
+            )
+        )
     }
 }

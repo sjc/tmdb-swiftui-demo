@@ -37,6 +37,7 @@ struct HeroImageView: View {
             Text(title)
                 .font(.largeTitle)
                 .foregroundColor(.white)
+                .shadow(radius: 1.0)
                 .padding(.all)
         }
     }

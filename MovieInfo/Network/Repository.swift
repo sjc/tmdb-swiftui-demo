@@ -9,9 +9,9 @@ import Foundation
 
 protocol Repository {
     func search(term: String) async -> Result<[SearchResult],Error>
-    func fetch(movieId: Int) async -> Result<Movie,Error>
-    func fetch(tvShowId: Int) async -> Result<TVShow,Error>
-    func fetch(personId: Int) async -> Result<Person,Error>
+    func fetch(movieId: Int) async -> Result<MovieDetails,Error>
+    func fetch(tvShowId: Int) async -> Result<TVShowDetails,Error>
+    func fetch(personId: Int) async -> Result<PersonDetails,Error>
 }
 
 enum RepositoryError: Error {
@@ -20,13 +20,16 @@ enum RepositoryError: Error {
     case parseFailed
     case tmdb(code: Int, message: String)
     
-    static func from(json: [String:Any]) -> RepositoryError? {
+    static func from(data: Data) -> RepositoryError? {
         // TMDB errors are JSON dictionaries with the form:
         //  {
         //      success: false,
         //      status_code: 34,
         //      status_message: "The resource you requested could not be found."
         //  }
+        guard let json = try? JSONSerialization.jsonObject(with: data) as? [String:Any] else {
+            return .parseFailed
+        }
         guard let success = json["success"] as? Bool, success == false else {
             return nil
         }

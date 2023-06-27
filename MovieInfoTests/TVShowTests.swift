@@ -10,25 +10,24 @@ import XCTest
 
 final class TVShowTests: FixtureLoadingTests {
 
-    func testParse() throws {
-        let details = load(fixture: "tv_show")
-        let credits = load(fixture: "tv_show_credits")
-        
-        let tvShow = TVShow.from(details: details, credits: credits)
+    func testParse_TVShowDetails() throws {
+        let data = load(data: "tv_show")
+        let tvShow = try? JSONDecoder().decode(TVShowDetails.self, from: data)
         XCTAssertNotNil(tvShow)
         XCTAssertEqual(tvShow!.id, 95)
-        XCTAssertEqual(tvShow!.title, "Buffy the Vampire Slayer")
-        XCTAssertEqual(tvShow!.posterPath, "/y7fVZkyheCEQHDUEHwNmYENGfT2.jpg")
-        XCTAssertEqual(tvShow!.backdropPath, "/q4CbisNArigphVn608Faxijdw8N.jpg")
-        XCTAssertEqual(tvShow!.startDate, "1997-03-10")
-        XCTAssertEqual(tvShow!.endDate, "2003-05-20")
-        XCTAssertEqual(tvShow!.seasons, 8)
-        XCTAssertEqual(tvShow!.runtime, 43)
         XCTAssertEqual(tvShow!.tagline, "Get home before dark.")
-        XCTAssertFalse(tvShow!.overview.isEmpty)
-        XCTAssertEqual(tvShow!.cast.count, 7)
-        XCTAssertEqual(tvShow!.crew.count, 9)
-        
+
+        XCTAssertEqual(tvShow!.createdBy.count, 1)
+        XCTAssertEqual(tvShow!.createdBy[0].id, 12891)
+        XCTAssertEqual(tvShow!.createdBy[0].name, "Joss Whedon")
+
+        XCTAssertEqual(tvShow!.numberOfEpisodes, 144)
+        XCTAssertEqual(tvShow!.numberOfSeasons, 7)
+        XCTAssertEqual(tvShow!.episodeRunTimes, [43])
+        XCTAssertEqual(tvShow!.runtimeMins, "43 mins")
+
+        XCTAssertEqual(tvShow!.firstAirDate, "1997-03-10")
+        XCTAssertEqual(tvShow!.lastAirDate, "2003-05-20")
         XCTAssertEqual(tvShow!.activeYears, "1997 - 2003")
     }
 

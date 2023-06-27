@@ -7,50 +7,69 @@
 
 import Foundation
 
-struct Movie {
+struct MovieSummary: Equatable, Codable {
+
+    // the information about a movie which is returned by the Search API
+    //  where "media_type": "movie"
 
     let id: Int
     let title: String
-    let posterPath: String?
     let backdropPath: String?
-    let releaseDate: String
-    let runtime: Int
-    let tagline: String
+    let posterPath: String?
     let overview: String
-    
-    let cast: [SearchResult]
-    let crew: [SearchResult]
-    
+    let genres: [Int]
+    let originalLanguage: String?
+    let originalTitle: String?
+    let popularity: Double
+    let releaseDate: String?
+    let video: Bool // TODO: what is this for?
+    let voteAverage: Double
+    let voteCount: Int
+
+    enum CodingKeys: String, CodingKey {
+        case id
+        case title
+        case backdropPath = "backdrop_path"
+        case posterPath = "poster_path"
+        case overview
+        case genres = "genre_ids"
+        case originalLanguage = "original_language"
+        case originalTitle = "original_title"
+        case popularity
+        case releaseDate = "release_date"
+        case video
+        case voteAverage = "vote_average"
+        case voteCount = "vote_count"
+    }
+
     var releaseYear: String {
-        return String(releaseDate.prefix(4))
+        return String((releaseDate ?? "").prefix(4))
     }
-    
-    var runtimeMins: String {
-        return "\(runtime) mins"
+}
+
+struct MovieDetails: Codable {
+
+    let id: Int
+    let tagline: String?
+    let runtime: Int
+    let budget: Int?
+    let revenue: Int?
+    let imdbId: String?
+
+    enum CodingKeys: String, CodingKey {
+        case id
+        case tagline
+        case runtime
+        case budget
+        case revenue
+        case imdbId = "imdb_id"
     }
+
+    var cast: [PersonSummary]?
+    var crew: [PersonSummary]?
     
-    static func from(details: [String:Any], credits: [String:Any]) -> Movie? {
-        guard let id = details["id"] as? Int,
-              let title = details["original_title"] as? String,
-              let releaseDate = details["release_date"] as? String,
-              let runtime = details["runtime"] as? Int,
-              let tagline = details["tagline"] as? String,
-              let overview = details["overview"] as? String,
-              let cast = credits["cast"] as? [[String:Any]],
-              let crew = credits["crew"] as? [[String:Any]] else {
-            return nil
-        }
-        return Movie(
-            id: id,
-            title: title,
-            posterPath: details["poster_path"] as? String,
-            backdropPath: details["backdrop_path"] as? String,
-            releaseDate: releaseDate,
-            runtime: runtime,
-            tagline: tagline,
-            overview: overview,
-            cast: cast.compactMap { SearchResult.from(cast: $0) },
-            crew: crew.compactMap { SearchResult.from(crew: $0) }
-        )
+    mutating func add(credits: Credits) {
+        self.cast = credits.cast
+        self.crew = credits.crew
     }
 }

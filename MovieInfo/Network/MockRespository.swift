@@ -13,32 +13,51 @@ import Foundation
 class MockRepository: Repository {
     
     var searchResultsToReturn: [SearchResult]? = [
-        SearchResult(
-            mediaType: .movie,
-            id: 8321,
-            popularity: 1.0,
-            title: "In Bruges",
-            subtitle: "2008",
-            posterPath: "/jMiBBqk72VRo1Y39x2ZbbenEU3a.jpg",
-            backgroundPath: "/dtGxDOcFssdUUTYBr6M6INXTI1e.jpg"
+        .movie(
+            MovieSummary(
+                id: 8321,
+                title: "In Bruges",
+                backdropPath: "/dtGxDOcFssdUUTYBr6M6INXTI1e.jpg",
+                posterPath: "/jMiBBqk72VRo1Y39x2ZbbenEU3a.jpg",
+                overview: "Stuff",
+                genres: [21],
+                originalLanguage: nil,
+                originalTitle: nil,
+                popularity: 1.0,
+                releaseDate: "2008",
+                video: false,
+                voteAverage: 0.0,
+                voteCount: 0
+            )
         ),
-        SearchResult(
-            mediaType: .tv,
-            id: 95,
-            popularity: 1.0,
-            title: "Buffy the Vampire Slayer",
-            subtitle: "1997",
-            posterPath: "/y7fVZkyheCEQHDUEHwNmYENGfT2.jpg",
-            backgroundPath: "/q4CbisNArigphVn608Faxijdw8N.jpg"
+        .tvShow(
+            TVShowSummary(
+                id: 95,
+                name: "Buffy the Vampire Slayer",
+                backdropPath: "/q4CbisNArigphVn608Faxijdw8N.jpg",
+                posterPath: "/y7fVZkyheCEQHDUEHwNmYENGfT2.jpg",
+                firstAirDate: "1997",
+                genres: [21],
+                countryOfOrigin: ["US"],
+                originalLanguage: "en",
+                originalName: nil,
+                overview: "Into every generation a slayer is born: one girl in all the world, a chosen one. She alone will wield the strength and skill to fight the vampires, demons, and the forces of darkness; to stop the spread of their evil and the swell of their number. She is the Slayer.",
+                popularity: 1.0,
+                voteAverage: 0.0,
+                voteCount: 0
+            )
         ),
-        SearchResult(
-            mediaType: .person,
-            id: 2039,
-            popularity: 1.0,
-            title: "Brendan Gleeson",
-            subtitle: "Acting",
-            posterPath: "/379TXtBPRrkBDrEBWPQ5v3up7kT.jpg",
-            backgroundPath: nil
+        .person(
+            PersonSummary(
+                id: 2039,
+                name: "Brendan Gleeson",
+                profilePath: "/379TXtBPRrkBDrEBWPQ5v3up7kT.jpg",
+                department: "Acting",
+                character: nil,
+                job: nil,
+                originalName: nil,
+                popularity: 1.0
+            )
         )
     ]
     
@@ -53,71 +72,63 @@ class MockRepository: Repository {
         return .failure(RepositoryError.noData)
     }
     
-    var movieToReturn: Movie? = Movie(
+    var movieDetailsToReturn: MovieDetails? = MovieDetails(
         id: 8321,
-        title: "In Bruges",
-        posterPath: "/jMiBBqk72VRo1Y39x2ZbbenEU3a.jpg",
-        backdropPath: "/dtGxDOcFssdUUTYBr6M6INXTI1e.jpg",
-        releaseDate: "2008-02-08",
-        runtime: 108,
         tagline: "Shoot first. Sightsee later.",
-        overview: "Ray and Ken, two hit men, are in Bruges, Belgium, waiting for their next mission. While they are there they have time to think and discuss their previous assignment. When the mission is revealed to Ken, it is not what he expected.",
-        cast: [],
-        crew: []
+        runtime: 108,
+        budget: nil,
+        revenue: nil,
+        imdbId: nil
     )
     
     var movieErrorToReturn: Error?
     
-    func fetch(movieId: Int) async -> Result<Movie, Error> {
-        if let movie = movieToReturn {
-            return .success(movie)
+    func fetch(movieId: Int) async -> Result<MovieDetails, Error> {
+        if let details = movieDetailsToReturn {
+            return .success(details)
         } else if let error = movieErrorToReturn {
             return .failure(error)
         }
         return .failure(RepositoryError.noData)
     }
     
-    var tvShowToReturn: TVShow? = TVShow(
+    var tvShowDetailsToReturn: TVShowDetails? = TVShowDetails(
         id: 95,
-        title: "Buffy the Vampire Slayer",
-        posterPath: "/y7fVZkyheCEQHDUEHwNmYENGfT2.jpg",
-        backdropPath: "/q4CbisNArigphVn608Faxijdw8N.jpg",
-        startDate: "1997-03-10",
-        endDate: "2003-05-20",
-        seasons: 8,
-        runtime: 43,
         tagline: "Get home before dark.",
-        overview: "Into every generation a slayer is born: one girl in all the world, a chosen one. She alone will wield the strength and skill to fight the vampires, demons, and the forces of darkness; to stop the spread of their evil and the swell of their number. She is the Slayer.",
-        cast: [],
-        crew: []
+        createdBy: [],
+        numberOfEpisodes: 144,
+        numberOfSeasons: 7,
+        episodeRunTimes: [43],
+        firstAirDate: "1997-03-10",
+        lastAirDate: "2003-05-20"
     )
 
     var tvShowErrorToReturn: Error?
     
-    func fetch(tvShowId: Int) async -> Result<TVShow, Error> {
-        if let tvShow = tvShowToReturn {
-            return .success(tvShow)
+    func fetch(tvShowId: Int) async -> Result<TVShowDetails, Error> {
+        if let details = tvShowDetailsToReturn {
+            return .success(details)
         } else if let error = tvShowErrorToReturn {
             return .failure(error)
         }
         return .failure(RepositoryError.noData)
     }
     
-    var personToReturn: Person? = Person(
+    var personDetailsToReturn: PersonDetails? = PersonDetails(
         id: 2039,
-        name: "Brendan Gleeson",
-        birthday: "1955-03-29",
-        deathday: "",
-        placeOfBirth: "Dublin, Ireland",
+        alsoKnownAs: [],
         biography: "Brendan Gleeson (born 29 March 1955) is an Irish actor and film director.",
-        posterPath: "/379TXtBPRrkBDrEBWPQ5v3up7kT.jpg"
+        birthday: "1955-03-29",
+        deathday: nil,
+        placeOfBirth: "Dublin, Ireland",
+        imdbId: nil
     )
 
     var personErrorToReturn: Error?
     
-    func fetch(personId: Int) async -> Result<Person, Error> {
-        if let person = personToReturn {
-            return .success(person)
+    func fetch(personId: Int) async -> Result<PersonDetails, Error> {
+        if let details = personDetailsToReturn {
+            return .success(details)
         } else if let error = personErrorToReturn {
             return .failure(error)
         }

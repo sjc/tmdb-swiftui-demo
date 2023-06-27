@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum MediaType: String {
+enum MediaType: String, Decodable {
     case movie
     case tv
     case person

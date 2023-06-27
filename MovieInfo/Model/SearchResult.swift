@@ -7,120 +7,110 @@
 
 import Foundation
 
-struct SearchResult {
-    let mediaType: MediaType
-    let id: Int
-    let popularity: Double
-    let title: String
-    let subtitle: String
-    let posterPath: String?
-    let backgroundPath: String?
-    
-    //
-    // MARK: Parsing from /search/multi response
-    //
-    
-    static func from(json: [String:Any]) -> SearchResult? {
-        guard let type = json["media_type"] as? String, let mediaType = MediaType(rawValue: type) else {
-            return nil
-        }
-        switch mediaType {
-        case .movie:
-            return from(movie: json)
-        case .tv:
-            return from(tvShow: json)
-        case .person:
-            return from(person: json)
-        }
-    }
-    
-    private static func from(movie json: [String:Any]) -> SearchResult? {
-        guard let id = json["id"] as? Int,
-              let popularity = json["popularity"] as? Double,
-              let title = json["title"] as? String else {
-            return nil
-        }
-        return SearchResult(
-            mediaType: .movie,
-            id: id,
-            popularity: popularity,
-            title: title,
-            subtitle: String((json["release_date"] as? String ?? "").prefix(4)),
-            posterPath: json["poster_path"] as? String,
-            backgroundPath: json["backdrop_path"] as? String
-        )
-    }
-    
-    private static func from(tvShow json: [String:Any]) -> SearchResult? {
-        guard let id = json["id"] as? Int,
-              let popularity = json["popularity"] as? Double,
-              let title = json["name"] as? String else {
-            return nil
-        }
-        return SearchResult(
-            mediaType: .tv,
-            id: id,
-            popularity: popularity,
-            title: title,
-            subtitle: String((json["first_air_date"] as? String ?? "").prefix(4)),
-            posterPath: json["poster_path"] as? String,
-            backgroundPath: json["backdrop_path"] as? String
-        )
+enum SearchResult: Decodable, Identifiable {
+
+    case person(_: PersonSummary)
+    case movie(_: MovieSummary)
+    case tvShow(_: TVShowSummary)
+
+    enum CodingKeys: String, CodingKey {
+        case mediaType = "media_type"
     }
 
-    private static func from(person json: [String:Any]) -> SearchResult? {
-        guard let id = json["id"] as? Int,
-              let popularity = json["popularity"] as? Double,
-              let title = json["name"] as? String else {
-            return nil
+    init(from decoder: Decoder) throws {
+        
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let mediaType: MediaType? = try? container.decodeIfPresent(MediaType.self, forKey: .mediaType)
+
+        switch mediaType {
+        case .person:
+            self = .person(try PersonSummary(from: decoder))
+        case .movie:
+            self = .movie(try MovieSummary(from: decoder))
+        case .tv:
+            self = .tvShow(try TVShowSummary(from: decoder))
+        case .none:
+            fatalError()
         }
-        return SearchResult(
-            mediaType: .person,
-            id: id,
-            popularity: popularity,
-            title: title,
-            subtitle: json["known_for_department"] as? String ?? "", // this will be wrong (eg. "Acting" rather than "Actor") but we'll go with it for now
-            posterPath: json["profile_path"] as? String,
-            backgroundPath: nil
-        )
     }
     
-    //
-    // MARK: Parsing from /credits response
-    //
-    
-    static func from(cast json: [String:Any]) -> SearchResult? {
-        guard let id = json["id"] as? Int,
-              let popularity = json["popularity"] as? Double,
-              let name = json["name"] as? String else {
-            return nil
+    var id: Int {
+        switch self {
+        case .person(let person):
+            return person.id
+        case .movie(let movie):
+            return movie.id
+        case .tvShow(let tvShow):
+            return tvShow.id
         }
-        return SearchResult(
-            mediaType: .person,
-            id: id,
-            popularity: popularity,
-            title: name,
-            subtitle: json["character"] as? String ?? "",
-            posterPath: json["profile_path"] as? String,
-            backgroundPath: nil
-        )
+    }
+
+    var popularity: Double {
+        switch self {
+        case .person(let person):
+            return person.popularity ?? 0.0
+        case .movie(let movie):
+            return movie.popularity
+        case .tvShow(let tvShow):
+            return tvShow.popularity
+        }
     }
     
-    static func from(crew json: [String:Any]) -> SearchResult? {
-        guard let id = json["id"] as? Int,
-              let popularity = json["popularity"] as? Double,
-              let name = json["name"] as? String else {
-            return nil
+    var movie: MovieSummary? {
+        if case .movie(let movie) = self {
+            return movie
         }
-        return SearchResult(
-            mediaType: .person,
-            id: id,
-            popularity: popularity,
-            title: name,
-            subtitle: json["job"] as? String ?? "",
-            posterPath: json["profile_path"] as? String,
-            backgroundPath: nil
-        )
+        return nil
+    }
+    
+    var tvShow: TVShowSummary? {
+        if case .tvShow(let tvShow) = self {
+            return tvShow
+        }
+        return nil
+    }
+    
+    var person: PersonSummary? {
+        if case .person(let person) = self {
+            return person
+        }
+        return nil
+    }
+}
+
+extension SearchResult {
+    
+    var smallImageURL: URL? {
+        switch self {
+        case .person(let person):
+            return person.profilePath?.smallImageURL
+        case .movie(let movie):
+            return movie.posterPath?.smallImageURL
+        case .tvShow(let tvShow):
+            return tvShow.posterPath?.smallImageURL
+        }
+    }
+    
+    var title: String {
+        switch self {
+        case .person(let person):
+            return person.name
+        case .movie(let movie):
+            return movie.title
+        case .tvShow(let tvShow):
+            return tvShow.name
+        }
+    }
+    
+    var subtitle: String {
+        switch self {
+        case .person(let person):
+            return person.department ?? ""
+        case .movie(let movie):
+            return movie.releaseYear
+        case .tvShow(let tvShow):
+            return String((tvShow.firstAirDate ?? "").prefix(4))
+        }
     }
 }
 
